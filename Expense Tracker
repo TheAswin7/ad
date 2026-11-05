@@ -1,0 +1,158 @@
+import React, { useState } from 'react';
+import {
+  View, Text, TextInput, TouchableOpacity,
+  FlatList, StyleSheet
+} from 'react-native';
+
+export default function App() {
+
+  const [amount, setAmount] = useState('');
+  const [category, setCategory] = useState('');
+  const [type, setType] = useState('Expense');
+  const [transactions, setTransactions] = useState([]);
+
+  const addTransaction = () => {
+    if (!amount || !category || Number(amount) <= 0) return;
+
+    setTransactions([...transactions, {
+      id: Date.now().toString(),
+      amount: Number(amount),
+      category: category,
+      type: type
+    }]);
+
+    setAmount('');
+    setCategory('');
+  };
+
+  const calcTotal = (t) =>
+    transactions
+      .filter(i => i.type === t)
+      .reduce((s, i) => s + i.amount, 0);
+
+  const totalIncome = calcTotal('Income');
+  const totalExpense = calcTotal('Expense');
+  const balance = totalIncome - totalExpense;
+
+  return (
+    <View style={styles.container}>
+
+      <Text style={styles.title}>Expense Manager</Text>
+
+      <TextInput
+        style={styles.input}
+        placeholder="Enter Amount"
+        keyboardType="numeric"
+        value={amount}
+        onChangeText={setAmount}
+      />
+
+      <TextInput
+        style={styles.input}
+        placeholder="Enter Category"
+        value={category}
+        onChangeText={setCategory}
+      />
+
+      <View style={styles.row}>
+        {['Income', 'Expense'].map(t => (
+          <TouchableOpacity
+            key={t}
+            style={[
+              styles.btn,
+              t === 'Income' ? styles.income : styles.expense
+            ]}
+            onPress={() => setType(t)}
+          >
+            <Text style={styles.btnText}>{t}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      <TouchableOpacity
+        style={[styles.btn, styles.add]}
+        onPress={addTransaction}
+      >
+        <Text style={styles.btnText}>Add Transaction</Text>
+      </TouchableOpacity>
+
+      <Text style={styles.summary}>Total Income: ₹{totalIncome}</Text>
+      <Text style={styles.summary}>Total Expense: ₹{totalExpense}</Text>
+      <Text style={styles.balance}>Balance: ₹{balance}</Text>
+
+      <FlatList
+        data={transactions}
+        keyExtractor={item => item.id}
+        renderItem={({ item }) => (
+          <View style={styles.card}>
+            <Text>{item.type}</Text>
+            <Text>₹{item.amount}</Text>
+            <Text>{item.category}</Text>
+          </View>
+        )}
+      />
+
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    marginTop: 50
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 20
+  },
+  input: {
+    borderWidth: 1,
+    padding: 10,
+    marginBottom: 10,
+    borderRadius: 8
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  btn: {
+    padding: 12,
+    borderRadius: 8,
+    width: '48%'
+  },
+  income: {
+    backgroundColor: 'green'
+  },
+  expense: {
+    backgroundColor: 'red'
+  },
+  add: {
+    backgroundColor: '#4f46e5',
+    width: '100%',
+    marginTop: 15
+  },
+  btnText: {
+    color: 'white',
+    textAlign: 'center',
+    fontWeight: 'bold'
+  },
+  summary: {
+    fontSize: 18,
+    marginTop: 15
+  },
+  balance: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginTop: 10,
+    color: 'blue'
+  },
+  card: {
+    borderWidth: 1,
+    padding: 10,
+    marginTop: 10,
+    borderRadius: 8
+  }
+});
