@@ -1,0 +1,205 @@
+
+import React, { useState } from 'react';
+import {
+  View, Text, TextInput, TouchableOpacity,
+  StyleSheet, ScrollView, Alert
+} from 'react-native';
+
+export default function App() {
+
+  const [height, setHeight] = useState('');
+  const [weight, setWeight] = useState('');
+  const [bmi, setBmi] = useState('');
+  const [status, setStatus] = useState('');
+
+  const calculateBMI = () => {
+    const h = parseFloat(height) / 100;
+    const w = parseFloat(weight);
+
+    if (!height || !weight || isNaN(h) || isNaN(w) || h <= 0 || w <= 0) {
+      Alert.alert('Invalid Input', 'Please enter valid height and weight.');
+      return;
+    }
+
+    const val = w / (h * h);
+
+    setBmi(val.toFixed(2));
+
+    setStatus(
+      val < 18.5 ? 'Underweight' :
+      val < 25 ? 'Normal Weight' :
+      val < 30 ? 'Overweight' : 'Obese'
+    );
+  };
+
+  const reset = () => {
+    setHeight('');
+    setWeight('');
+    setBmi('');
+    setStatus('');
+  };
+
+  const colors = {
+    'Underweight': '#F59E0B',
+    'Normal Weight': '#10B981',
+    'Overweight': '#EF4444',
+    'Obese': '#DC2626'
+  };
+
+  return (
+    <ScrollView contentContainerStyle={styles.container}>
+
+      <Text style={styles.icon}>🏃</Text>
+      <Text style={styles.title}>BMI Tracker</Text>
+      <Text style={styles.subtitle}>
+        Calculate Your Health Status
+      </Text>
+
+      <View style={styles.card}>
+
+        <Text style={styles.label}>Height (cm)</Text>
+        <TextInput
+          style={styles.input}
+          keyboardType="numeric"
+          placeholder="Enter Height"
+          value={height}
+          onChangeText={setHeight}
+        />
+
+        <Text style={styles.label}>Weight (kg)</Text>
+        <TextInput
+          style={styles.input}
+          keyboardType="numeric"
+          placeholder="Enter Weight"
+          value={weight}
+          onChangeText={setWeight}
+        />
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={calculateBMI}
+        >
+          <Text style={styles.buttonText}>Calculate BMI</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.resetButton}
+          onPress={reset}
+        >
+          <Text style={styles.buttonText}>Reset</Text>
+        </TouchableOpacity>
+
+        {bmi !== '' && (
+          <View style={styles.resultCard}>
+            <Text style={styles.resultTitle}>Your BMI</Text>
+            <Text style={styles.bmiValue}>{bmi}</Text>
+            <Text style={[styles.status, {color: colors[status]}]}>
+              {status}
+            </Text>
+          </View>
+        )}
+
+      </View>
+    </ScrollView>
+  );
+}
+
+const styles = StyleSheet.create({
+
+  container: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F8FAFC',
+    padding: 20
+  },
+
+  icon: {
+    fontSize: 60,
+    marginBottom: 10
+  },
+
+  title: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    color: '#2563EB'
+  },
+
+  subtitle: {
+    fontSize: 16,
+    color: '#64748B',
+    marginBottom: 25
+  },
+
+  card: {
+    width: '100%',
+    backgroundColor: '#FFF',
+    padding: 20,
+    borderRadius: 20,
+    elevation: 5
+  },
+
+  label: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 8,
+    color: '#1F2937'
+  },
+
+  input: {
+    borderWidth: 1,
+    borderColor: '#CBD5E1',
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 15,
+    fontSize: 16
+  },
+
+  button: {
+    backgroundColor: '#2563EB',
+    padding: 15,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginTop: 5
+  },
+
+  resetButton: {
+    backgroundColor: '#EF4444',
+    padding: 15,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginTop: 10
+  },
+
+  buttonText: {
+    color: '#FFF',
+    fontWeight: 'bold',
+    fontSize: 16
+  },
+
+  resultCard: {
+    marginTop: 20,
+    padding: 20,
+    backgroundColor: '#F1F5F9',
+    borderRadius: 15,
+    alignItems: 'center'
+  },
+
+  resultTitle: {
+    fontSize: 18,
+    fontWeight: '600'
+  },
+
+  bmiValue: {
+    fontSize: 42,
+    fontWeight: 'bold',
+    color: '#2563EB',
+    marginVertical: 10
+  },
+
+  status: {
+    fontSize: 20,
+    fontWeight: '700'
+  }
+
+});
