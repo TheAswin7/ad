@@ -1,0 +1,134 @@
+
+import React, {useState} from 'react';
+import {
+  View, Text, TextInput,
+  TouchableOpacity, StyleSheet
+} from 'react-native';
+
+export default function App() {
+
+  const [value, setValue] = useState('');
+  const [result, setResult] = useState('');
+  const [conversion, setConversion] = useState('kmToMiles');
+
+  const conversions = {
+    kmToMiles: [0.621371, 'Miles'],
+    milesToKm: [1.60934, 'KM'],
+    kgToPounds: [2.20462, 'Pounds'],
+    poundsToKg: [0.453592, 'KG']
+  };
+
+  const convertUnit = () => {
+    const num = parseFloat(value);
+
+    if (value.trim() === '' || isNaN(num)) {
+      setResult('Enter a valid number');
+      return;
+    }
+
+    const [factor, unit] = conversions[conversion];
+
+    setResult(`${(num * factor).toFixed(2)} ${unit}`);
+  };
+
+  const options = [
+    {key: 'kmToMiles', label: 'KM → Miles'},
+    {key: 'milesToKm', label: 'Miles → KM'},
+    {key: 'kgToPounds', label: 'KG → Pounds'},
+    {key: 'poundsToKg', label: 'Pounds → KG'}
+  ];
+
+  return (
+    <View style={styles.container}>
+
+      <Text style={styles.title}>Unit Converter</Text>
+
+      <TextInput
+        style={styles.input}
+        placeholder="Enter Value"
+        keyboardType="numeric"
+        value={value}
+        onChangeText={setValue}
+      />
+
+      {options.map(o => (
+        <TouchableOpacity
+          key={o.key}
+          style={[
+            styles.option,
+            conversion === o.key && styles.selected
+          ]}
+          onPress={() => setConversion(o.key)}
+        >
+          <Text>{o.label}</Text>
+        </TouchableOpacity>
+      ))}
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={convertUnit}
+      >
+        <Text style={styles.buttonText}>Convert</Text>
+      </TouchableOpacity>
+
+      <Text style={styles.result}>{result}</Text>
+
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+
+  container: {
+    flex: 1,
+    padding: 20,
+    justifyContent: 'center'
+  },
+
+  title: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 25
+  },
+
+  input: {
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 12,
+    marginBottom: 15
+  },
+
+  option: {
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 10
+  },
+
+  selected: {
+    backgroundColor: '#C7D2FE',
+    borderColor: '#4F46E5'
+  },
+
+  button: {
+    backgroundColor: '#4f46e5',
+    padding: 15,
+    borderRadius: 10,
+    marginTop: 10
+  },
+
+  buttonText: {
+    color: 'white',
+    textAlign: 'center',
+    fontWeight: 'bold'
+  },
+
+  result: {
+    fontSize: 24,
+    textAlign: 'center',
+    marginTop: 25,
+    fontWeight: 'bold'
+  }
+
+});
