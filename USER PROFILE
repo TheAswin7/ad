@@ -1,0 +1,150 @@
+
+import React, {useState} from 'react';
+import {
+  View, Text, TextInput, TouchableOpacity,
+  StyleSheet, Image, Alert
+} from 'react-native';
+
+export default function App() {
+
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+
+  const login = () => {
+    if (!username || !password) {
+      Alert.alert('Error', 'Please enter username and password');
+    } else {
+      Alert.alert('Success', 'Login Successful!');
+    }
+  };
+
+  const reset = () => {
+    setUsername('');
+    setPassword('');
+  };
+
+  return (
+    <View style={styles.container}>
+
+      <View style={styles.box}>
+
+        <Image
+          source={{uri:'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'}}
+          style={styles.image}
+        />
+
+        <Text style={styles.title}>Student Portal</Text>
+        <Text style={styles.subtitle}>Login to continue</Text>
+
+        <TextInput
+          style={styles.input}
+          placeholder="Username"
+          value={username}
+          onChangeText={setUsername}
+        />
+
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
+
+        <TouchableOpacity style={styles.button} onPress={login}>
+          <Text style={styles.buttonText}>Submit</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.reset} onPress={reset}>
+          <Text style={styles.buttonText}>Reset</Text>
+        </TouchableOpacity>
+
+        <View style={styles.links}>
+          <Text onPress={() => Alert.alert('Forgot Password?','Contact administrator')}>
+            Forget Password?
+          </Text>
+          <Text> | </Text>
+          <Text onPress={() => Alert.alert('Sign Up','Registration selected')}>
+            Sign Up
+          </Text>
+        </View>
+
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#EEF2FF',
+    padding: 20
+  },
+
+  box: {
+    backgroundColor: 'white',
+    width: '100%',
+    padding: 25,
+    borderRadius: 15,
+    alignItems: 'center',
+    elevation: 5
+  },
+
+  image: {
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+    marginBottom: 15
+  },
+
+  title: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    color: '#4F46E5'
+  },
+
+  subtitle: {
+    marginBottom: 20,
+    color: '#666'
+  },
+
+  input: {
+    width: '100%',
+    borderWidth: 1,
+    borderColor: '#CCC',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 12
+  },
+
+  button: {
+    backgroundColor: '#4F46E5',
+    padding: 12,
+    width: '100%',
+    borderRadius: 8,
+    marginTop: 5
+  },
+
+  reset: {
+    backgroundColor: '#EF4444',
+    padding: 12,
+    width: '100%',
+    borderRadius: 8,
+    marginTop: 10
+  },
+
+  buttonText: {
+    color: 'white',
+    textAlign: 'center',
+    fontWeight: 'bold'
+  },
+
+  links: {
+    flexDirection: 'row',
+    marginTop: 20
+  }
+
+});
